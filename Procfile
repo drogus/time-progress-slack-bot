@@ -1,1 +1,1 @@
-web: ROCKET_PORT= ROCKET_ENV=prod ./target/release/time-progress-slack-bot
+web: ROCKET_PORT=$PORT ROCKET_ENV=prod ./target/release/time-progress-slack-bot
