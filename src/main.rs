@@ -6,9 +6,10 @@ extern crate chrono;
 
 use rocket::State;
 use rocket_contrib::json::{JsonValue};
-use chrono::{Date, TimeZone, Utc};
+use chrono::{Date, Utc};
 
-const NUMBER_OF_CHARS_IN_PROGRESS_BAR: u8 = 20;
+mod utils;
+use self::utils::{read_date_from_env_var,get_days_counts,generate_progressbar,calculate_percent};
 
 struct AConfig {
   start_date: Date<Utc>,
@@ -19,42 +20,21 @@ struct AConfig {
 fn progress(config: State<AConfig>) -> JsonValue {
     let end_date = config.end_date;
     let start_date = config.start_date;
-    let today = Utc::today();
 
-    let days_till_end = end_date.signed_duration_since(today).num_days();
-    let all_days = end_date.signed_duration_since(start_date).num_days();
-    let message = format!("{} days left untill {}", days_till_end, end_date.format("%A, %e %B %Y"));
-    let progress: f32 = (all_days - days_till_end) as f32 / all_days as f32;
-    let percent = progress * 100_f32;
-    let filled_chars = (NUMBER_OF_CHARS_IN_PROGRESS_BAR as f32 * progress).round() as u8;
-    let rest_chars = NUMBER_OF_CHARS_IN_PROGRESS_BAR - filled_chars;
-    let mut progressbar = String::new();
-    for _i in 0..filled_chars {
-        progressbar.push_str("▓");
-    }
-    for _i in 0..rest_chars {
-        progressbar.push_str("░");
-    }
+    let count = get_days_counts(start_date, end_date);
+
+    let message = format!("{} days left untill {}", count.remaining_days, end_date.format("%A, %e %B %Y"));
+    let progressbar = generate_progressbar(&count);
 
     json!({
         "response_type": "in_channel",
         "text": message,
         "attachments": [
             {
-                "text": format!("{} {:.1}%", progressbar, percent)
+                "text": format!("{} {:.1}%", progressbar, calculate_percent(&count))
             }
         ]
     })
-}
-
-fn read_date_from_env_var(var_name: String) -> Date<Utc> {
-    let env_var_date = std::env::var(&var_name)
-        .expect(&format!("{} env var is not set, exiting", var_name));
-    let date_str = format!("{}T00:00:00", env_var_date);
-    let datetime = Utc::datetime_from_str(&Utc, &date_str.to_owned(), "%Y-%m-%dT%H:%M:%S").
-        expect(&format!("{} needs to be specified with %Y-%m-%d format, exiting", var_name));
-
-    datetime.date()
 }
 
 fn main() {

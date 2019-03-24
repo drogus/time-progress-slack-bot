@@ -8,6 +8,8 @@ edition = "2018"
 rocket = "0.4"
 rocket_contrib = "0.4"
 chrono = "0.4"
+redis = "0.10.0"
+reqwest = "0.9.12"
 
 [[bin]]
 name = "cron"
