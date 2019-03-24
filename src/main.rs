@@ -25,7 +25,7 @@ fn progress(config: State<AConfig>) -> JsonValue {
     let all_days = end_date.signed_duration_since(start_date).num_days();
     let message = format!("{} days left untill {}", days_till_end, end_date.format("%A, %e %B %Y"));
     let progress: f32 = (all_days - days_till_end) as f32 / all_days as f32;
-    let percent = (progress * 100_f32).round() as u8;
+    let percent = progress * 100_f32;
     let filled_chars = (NUMBER_OF_CHARS_IN_PROGRESS_BAR as f32 * progress).round() as u8;
     let rest_chars = NUMBER_OF_CHARS_IN_PROGRESS_BAR - filled_chars;
     let mut progressbar = String::new();
@@ -41,7 +41,7 @@ fn progress(config: State<AConfig>) -> JsonValue {
         "text": message,
         "attachments": [
             {
-                "text": format!("{} {}%", progressbar, percent)
+                "text": format!("{} {:.1}%", progressbar, percent)
             }
         ]
     })

@@ -8,3 +8,7 @@ edition = "2018"
 rocket = "0.4"
 rocket_contrib = "0.4"
 chrono = "0.4"
+
+[[bin]]
+name = "cron"
+path = "src/cron/bin/main.rs"
