@@ -29,7 +29,8 @@ fn main() {
         let slack_webhook_url = std::env::var("SLACK_WEBHOOK").expect("SLACK_WEBHOOK is not set");
         let client = reqwest::Client::new();
         let mut map = HashMap::new();
-        let message = format!("Woohoo! {}% reached! :dancing_avocados:", percent);
+        let message = format!("Woohoo! {}% reached, {} days left! :dancing_avocados:", percent, count.remaining_days);
+        println!("Sending message: {}", message);
         map.insert("text", message);
 
         let res = client.post(&slack_webhook_url.to_owned())
