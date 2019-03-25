@@ -8,7 +8,7 @@ pub struct DaysCount {
     pub remaining_days: i64
 }
 
-pub fn read_date_from_env_var(var_name: String) -> Date<Utc> {
+pub fn read_date_from_env_var(var_name: &str) -> Date<Utc> {
     let env_var_date = std::env::var(&var_name)
         .expect(&format!("{} env var is not set, exiting", var_name));
     let date_str = format!("{}T00:00:00", env_var_date);

@@ -39,8 +39,8 @@ fn progress(config: State<AConfig>) -> JsonValue {
 
 fn main() {
     let config = AConfig {
-        start_date: read_date_from_env_var("START_DATE".to_string()),
-        end_date: read_date_from_env_var("END_DATE".to_string()),
+        start_date: read_date_from_env_var("START_DATE"),
+        end_date: read_date_from_env_var("END_DATE"),
     };
     rocket::ignite().mount("/", routes![progress]).manage(config).launch();
 }

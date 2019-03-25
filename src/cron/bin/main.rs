@@ -18,8 +18,8 @@ fn main() {
     let conn = client.get_connection().expect("Couldn't open Redis connection");
     let last_value: u8 = conn.get("last_progress_percentage").unwrap_or(0);
 
-    let start_date = read_date_from_env_var("START_DATE".to_string());
-    let end_date = read_date_from_env_var("END_DATE".to_string());
+    let start_date = read_date_from_env_var("START_DATE");
+    let end_date = read_date_from_env_var("END_DATE");
     let count = get_days_counts(start_date, end_date);
     let percent: u8 = calculate_percent(&count).trunc() as u8;
 
